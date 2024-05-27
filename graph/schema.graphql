@@ -1,0 +1,65 @@
+type User {
+    id: ID!
+    name: String!
+}
+
+type Comment {
+    id: ID!
+    author: User!
+    content: String!
+    childComments: [Comment!]
+    parentComment: Comment
+    parentArticle: Article!
+}
+
+type Article {
+    id: ID!
+    name: String!
+    author: User!
+    content: String!
+    canComment: Boolean
+    Comments: [Comment!]
+}
+
+input NewArticle {
+    name: String!
+    userID: ID!
+    userName: String!
+    content: String!
+    canComment: Boolean
+}
+
+input NewComment {
+    userID: ID!
+    content: String!
+    parentArticleID: ID!
+    parentCommentID: ID
+}
+
+input SwitchCommentsAbility {
+    userID: ID!
+    articleID: ID!
+    canComment: Boolean!
+}
+
+input NewSubscription {
+    userID: ID!
+    articleID: ID!
+}
+
+type Query {
+    GetArticles(limit: Int = 20, offset: Int = 0): [Article]!
+    GetArticle: Article!
+    GetMoreComments(limit: Int = 20, offset: Int = 0): [Comment!]
+    GetChildComments(limit: Int = 20, offset: Int = 0): [Comment!]
+}
+
+type Mutation {
+    CreateArticle(input: NewArticle!): Article!
+    CreateComment(input: NewComment!): Comment!
+    TurnOfComments(input: SwitchCommentsAbility!): Article!
+}
+
+type Subscription {
+    newComments(input: NewSubscription!): Comment!
+}
